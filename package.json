@@ -8,6 +8,7 @@
     "test": "hardhat test",
     "test:cover": "hardhat coverage",
     "solhint": "solhint 'contracts/**/*.sol'",
+    "format": "prettier --write --ignore-unknown test contracts",
     "prepare": "husky install"
   },
   "devDependencies": {
