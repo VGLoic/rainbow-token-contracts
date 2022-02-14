@@ -32,11 +32,11 @@ export async function testSetup({
   const maxRetry = 10;
   while (retryCount < maxRetry) {
     console.log("hello");
-    const rainbowToken = await RainbowToken.deploy(
+    const rainbowToken = (await RainbowToken.deploy(
       targetColor.r,
       targetColor.g,
       targetColor.b
-    );
+    )) as RainbowToken;
     await rainbowToken.deployed();
     const txs = await Promise.all(
       signers.map((signer) =>

@@ -7,6 +7,7 @@ import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
 import "hardhat-deploy";
+import 'hardhat-deploy-ethers';
 
 dotenv.config();
 
@@ -16,11 +17,16 @@ dotenv.config();
 const config: HardhatUserConfig = {
   solidity: "0.8.4",
   networks: {
-    ropsten: {
-      url: process.env.ROPSTEN_URL || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    goerli: {
+      url: `https://goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
+      accounts: {
+        mnemonic: process.env.GOERLI_MNEMONIC,
+        path: "m/44'/60'/0'/0"
+      }
     },
+  },
+  namedAccounts: {
+    deployer: 0
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,

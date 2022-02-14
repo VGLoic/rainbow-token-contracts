@@ -39,7 +39,9 @@ describe("Rainbow Token - Exceptions Test", function () {
 
     beforeEach(async () => {
       const RainbowToken = await ethers.getContractFactory("RainbowToken");
-      rainbowToken = await RainbowToken.deploy(...TARGET_COLOR);
+      rainbowToken = (await RainbowToken.deploy(
+        ...TARGET_COLOR
+      )) as RainbowToken;
       await rainbowToken.deployed();
     });
 
