@@ -31,7 +31,6 @@ export async function testSetup({
   let retryCount = 0;
   const maxRetry = 10;
   while (retryCount < maxRetry) {
-    console.log("hello");
     const rainbowToken = (await RainbowToken.deploy(
       targetColor.r,
       targetColor.g,
