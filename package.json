@@ -5,11 +5,12 @@
   "license": "MIT",
   "scripts": {
     "compile": "hardhat compile",
+    "typechain": "hardhat typechain",
     "test": "hardhat test",
     "test:cover": "hardhat coverage",
     "solhint": "solhint 'contracts/**/*.sol'",
     "format": "prettier --write --ignore-unknown test contracts",
-    "prepare": "husky install"
+    "prepare": "husky install && hardhat typechain"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.4",

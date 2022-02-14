@@ -1,70 +1,47 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
-import { ContractReceipt } from "ethers";
 import { ethers } from "hardhat";
 import { RainbowToken } from "../typechain";
-
-type Color = {
-  r: number;
-  g: number;
-  b: number;
-};
-
-function areColorEquals(colorA: Color, colorB: Color) {
-  return (
-    colorA.r === colorB.r && colorA.g === colorB.g && colorA.b === colorB.b
-  );
-}
-
-function isOriginalColorValid(color: Color) {
-  return [color.r, color.g, color.b].every(
-    (comp) => comp === 0 || comp === 255
-  );
-}
-
-function mergeColors(colorA: Color, colorB: Color) {
-  return {
-    r: Math.floor((colorA.r + colorB.r) / 2),
-    g: Math.floor((colorA.g + colorB.g) / 2),
-    b: Math.floor((colorA.b + colorB.b) / 2),
-  };
-}
-
-export function expectEvent(
-  receipt: ContractReceipt,
-  name: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  argsCondition: (args: any) => boolean
-): void {
-  const index = receipt.events?.findIndex((e) => {
-    return e.event === name && argsCondition(e?.args);
-  });
-  expect(Number(index) >= 0).to.equal(true);
-}
+import {
+  DEFAULT_BLENDING_PRICE,
+  ENTRY_FEE,
+  SELF_BLEND_PRICE,
+} from "./constants";
+import { Color } from "./types";
+import {
+  areBalancesClose,
+  areColorEquals,
+  expectEvent,
+  isOriginalColorValid,
+  JoinGameTrace,
+  mergeColors,
+  testSetup,
+} from "./utils";
 
 describe("Rainbow Token - Flow Test", function () {
-  let player0Signer: SignerWithAddress;
-  let player1Signer: SignerWithAddress;
+  let playerSigners: SignerWithAddress[];
+  let firstPlayerSigner: SignerWithAddress;
+  let secondPlayerSigner: SignerWithAddress;
+  let winnerSigner: SignerWithAddress;
+  let winnerBlendingSigner: SignerWithAddress;
   let rainbowToken: RainbowToken;
+  let joinGameTrace: JoinGameTrace;
 
   const TARGET_COLOR: Color = {
-    r: 125,
-    g: 125,
-    b: 125,
+    r: 127,
+    g: 127,
+    b: 127,
   };
-  const ENTRY_FEE = ethers.utils.parseUnits("0.1", "ether");
-  const DEFAULT_BLENDING_PRICE = ethers.utils.parseUnits("0.1", "ether");
-  const SELF_BLEND_PRICE = ethers.utils.parseUnits("0.5", "ether");
 
   before(async () => {
-    [, player0Signer, player1Signer] = await ethers.getSigners();
-    const RainbowToken = await ethers.getContractFactory("RainbowToken");
-    rainbowToken = await RainbowToken.deploy(
-      TARGET_COLOR.r,
-      TARGET_COLOR.g,
-      TARGET_COLOR.b
-    );
-    await rainbowToken.deployed();
+    const setup = await testSetup({ targetColor: TARGET_COLOR });
+    playerSigners = setup.playerSigners;
+    rainbowToken = setup.rainbowToken;
+    firstPlayerSigner = setup.firstPlayerSigner;
+    secondPlayerSigner = setup.secondPlayerSigner;
+    winnerSigner = setup.winnerSigner;
+    winnerBlendingSigner = setup.winnerBlendingSigner;
+    joinGameTrace = setup.joinGameTrace;
   });
 
   it("game is properly initialized", async () => {
@@ -73,147 +50,222 @@ describe("Rainbow Token - Flow Test", function () {
   });
 
   it("accounts join the game", async () => {
-    for (const playerSigner of [player0Signer, player1Signer]) {
-      const tx = await rainbowToken
-        .connect(playerSigner)
-        .joinGame({ value: ENTRY_FEE });
-      const receipt = await tx.wait();
+    const { txs, receipts, players } = joinGameTrace;
+    for (let index = 0; index < playerSigners.length; index++) {
+      const playerSigner = playerSigners[index];
 
-      expect(tx.value).to.equal(ENTRY_FEE);
-
+      expect(txs[index].value).to.equal(ENTRY_FEE);
       expectEvent(
-        receipt,
+        receipts[index],
         "PlayerJoined",
         (args) =>
           args.account === playerSigner.address &&
           isOriginalColorValid(args.originalColor)
       );
-
       expect(await rainbowToken.isPlayer(playerSigner.address)).to.equal(true);
 
-      const player = await rainbowToken.getPlayer(playerSigner.address);
+      const player = players[index];
       expect(player.blendingPrice).to.equal(DEFAULT_BLENDING_PRICE);
       expect(areColorEquals(player.color, player.originalColor)).to.equal(true);
       expect(isOriginalColorValid(player.originalColor)).to.equal(true);
     }
+    const contractBalance = await ethers.provider.getBalance(
+      rainbowToken.address
+    );
+    expect(contractBalance).to.equal(ENTRY_FEE.mul(playerSigners.length));
   });
 
-  it("player0 updates its blending price", async () => {
+  it("first player updates its blending price", async () => {
     const updatedBlendingPrice = DEFAULT_BLENDING_PRICE.mul(2);
     const tx = await rainbowToken
-      .connect(player0Signer)
+      .connect(firstPlayerSigner)
       .updateBlendingPrice(updatedBlendingPrice);
     expectEvent(
       await tx.wait(),
       "BlendingPriceUpdated",
       (args) =>
-        args.account === player0Signer.address &&
+        args.account === firstPlayerSigner.address &&
         args.blendingPrice.toString() === updatedBlendingPrice.toString()
     );
-    const player = await rainbowToken.getPlayer(player0Signer.address);
+    const player = await rainbowToken.getPlayer(firstPlayerSigner.address);
     expect(player.blendingPrice).to.equal(updatedBlendingPrice);
   });
 
-  it("player 1 blends with player 0", async () => {
-    const player0 = await rainbowToken.getPlayer(player0Signer.address);
+  it("second player blends with first player", async () => {
+    const firstPlayer = await rainbowToken.getPlayer(firstPlayerSigner.address);
     const tx = await rainbowToken
-      .connect(player1Signer)
-      .blend(player0Signer.address, player0.color, {
+      .connect(secondPlayerSigner)
+      .blend(firstPlayerSigner.address, firstPlayer.color, {
         value: DEFAULT_BLENDING_PRICE.mul(2),
       });
     const receipt = await tx.wait();
 
     expect(tx.value).to.equal(DEFAULT_BLENDING_PRICE.mul(2));
 
-    const player1 = await rainbowToken.getPlayer(player1Signer.address);
+    const secondPlayer = await rainbowToken.getPlayer(
+      secondPlayerSigner.address
+    );
 
     expectEvent(receipt, "Blended", (args) => {
       return (
-        args.account === player1Signer.address &&
-        args.blendingAccount === player0Signer.address &&
+        args.account === secondPlayerSigner.address &&
+        args.blendingAccount === firstPlayerSigner.address &&
         areColorEquals(
           args.color,
-          mergeColors(player0.color, player1.originalColor)
+          mergeColors(firstPlayer.color, secondPlayer.originalColor)
         ) &&
-        areColorEquals(args.blendingColor, player0.color)
+        areColorEquals(args.blendingColor, firstPlayer.color)
       );
     });
 
-    expect(areColorEquals(player1.color, player1.originalColor)).to.equal(
-      false
-    );
+    expect(
+      areColorEquals(secondPlayer.color, secondPlayer.originalColor)
+    ).to.equal(false);
     expect(
       areColorEquals(
-        player1.color,
-        mergeColors(player0.color, player1.originalColor)
+        secondPlayer.color,
+        mergeColors(firstPlayer.color, secondPlayer.originalColor)
       )
     ).to.equal(true);
+
+    const contractBalance = await ethers.provider.getBalance(
+      rainbowToken.address
+    );
+    expect(contractBalance).to.equal(
+      ENTRY_FEE.mul(playerSigners.length).add(DEFAULT_BLENDING_PRICE)
+    );
   });
 
-  it("player 0 blends with player 1", async () => {
-    const player1 = await rainbowToken.getPlayer(player1Signer.address);
+  it("first player blends with second player", async () => {
+    const secondPlayer = await rainbowToken.getPlayer(
+      secondPlayerSigner.address
+    );
     const tx = await rainbowToken
-      .connect(player0Signer)
-      .blend(player1Signer.address, player1.color, {
+      .connect(firstPlayerSigner)
+      .blend(secondPlayerSigner.address, secondPlayer.color, {
         value: DEFAULT_BLENDING_PRICE,
       });
     const receipt = await tx.wait();
 
     expect(tx.value).to.equal(DEFAULT_BLENDING_PRICE);
 
-    const player0 = await rainbowToken.getPlayer(player0Signer.address);
+    const firstPlayer = await rainbowToken.getPlayer(firstPlayerSigner.address);
 
     expectEvent(receipt, "Blended", (args) => {
       return (
-        args.account === player0Signer.address &&
-        args.blendingAccount === player1Signer.address &&
+        args.account === firstPlayerSigner.address &&
+        args.blendingAccount === secondPlayerSigner.address &&
         areColorEquals(
           args.color,
-          mergeColors(player1.color, player0.originalColor)
+          mergeColors(secondPlayer.color, firstPlayer.originalColor)
         ) &&
-        areColorEquals(args.blendingColor, player1.color)
+        areColorEquals(args.blendingColor, secondPlayer.color)
       );
     });
 
-    expect(areColorEquals(player0.color, player0.originalColor)).to.equal(
-      false
-    );
+    expect(
+      areColorEquals(firstPlayer.color, firstPlayer.originalColor)
+    ).to.equal(false);
     expect(
       areColorEquals(
-        player0.color,
-        mergeColors(player1.color, player0.originalColor)
+        firstPlayer.color,
+        mergeColors(secondPlayer.color, firstPlayer.originalColor)
       )
     ).to.equal(true);
+    const contractBalance = await ethers.provider.getBalance(
+      rainbowToken.address
+    );
+    expect(contractBalance).to.equal(
+      ENTRY_FEE.mul(playerSigners.length)
+        .add(DEFAULT_BLENDING_PRICE)
+        .add(DEFAULT_BLENDING_PRICE.div(2))
+    );
   });
 
-  it("player 0 self blends", async () => {
-    const player0 = await rainbowToken.getPlayer(player0Signer.address);
+  it("first player self blends", async () => {
+    const firstPlayer = await rainbowToken.getPlayer(firstPlayerSigner.address);
     const tx = await rainbowToken
-      .connect(player0Signer)
+      .connect(firstPlayerSigner)
       .selfBlend({ value: SELF_BLEND_PRICE });
     const receipt = await tx.wait();
 
     expect(tx.value).to.equal(SELF_BLEND_PRICE);
 
-    const player0Updated = await rainbowToken.getPlayer(player0Signer.address);
+    const firstPlayerUpdated = await rainbowToken.getPlayer(
+      firstPlayerSigner.address
+    );
 
     expectEvent(
       receipt,
       "SelfBlended",
       (args) =>
-        args.account === player0Signer.address &&
+        args.account === firstPlayerSigner.address &&
         areColorEquals(
           args.color,
-          mergeColors(player0.color, player0.originalColor)
+          mergeColors(firstPlayer.color, firstPlayer.originalColor)
         )
     );
 
     expect(
       areColorEquals(
-        player0Updated.color,
-        mergeColors(player0.color, player0.originalColor)
+        firstPlayerUpdated.color,
+        mergeColors(firstPlayer.color, firstPlayer.originalColor)
       )
     );
-    expect(areColorEquals(player0.originalColor, player0Updated.originalColor));
+    expect(
+      areColorEquals(
+        firstPlayer.originalColor,
+        firstPlayerUpdated.originalColor
+      )
+    );
+    const contractBalance = await ethers.provider.getBalance(
+      rainbowToken.address
+    );
+    expect(contractBalance).to.equal(
+      ENTRY_FEE.mul(playerSigners.length)
+        .add(DEFAULT_BLENDING_PRICE)
+        .add(DEFAULT_BLENDING_PRICE.div(2))
+        .add(SELF_BLEND_PRICE)
+    );
+  });
+
+  it("winner claims victory once it has the target color", async () => {
+    const wonAmount = ENTRY_FEE.mul(playerSigners.length)
+      .add(DEFAULT_BLENDING_PRICE.mul(2))
+      .add(SELF_BLEND_PRICE);
+    const blendingPlayer = await rainbowToken.getPlayer(
+      winnerBlendingSigner.address
+    );
+    await rainbowToken
+      .connect(winnerSigner)
+      .blend(winnerBlendingSigner.address, blendingPlayer.color, {
+        value: DEFAULT_BLENDING_PRICE,
+      });
+
+    const winnerBalanceBefore = await ethers.provider.getBalance(
+      winnerSigner.address
+    );
+    const tx = await rainbowToken.connect(winnerSigner).claimVictory();
+    const receipt = await tx.wait();
+
+    expectEvent(
+      receipt,
+      "GameOver",
+      (args) =>
+        args.winner === winnerSigner.address &&
+        args.amount.toString() === wonAmount.toString()
+    );
+
+    const contractBalance = await ethers.provider.getBalance(
+      rainbowToken.address
+    );
+    expect(contractBalance).to.equal(0);
+
+    const winnerBalanceAfter = await ethers.provider.getBalance(
+      winnerSigner.address
+    );
+    expect(
+      areBalancesClose(winnerBalanceAfter, winnerBalanceBefore.add(wonAmount))
+    ).to.equal(true);
   });
 });

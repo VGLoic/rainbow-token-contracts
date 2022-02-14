@@ -32,6 +32,7 @@ contract RainbowToken is Context {
     error InvalidZeroBlendingPrice();
     error ColorNotMatching(Color blendingColor, Color actualColor);
     error PlayerNotWinner(address account);
+    error EtherTransferFail(address recipient);
 
     event PlayerJoined(address indexed account, Color originalColor);
     event BlendingPriceUpdated(address indexed account, uint256 blendingPrice);
@@ -42,7 +43,7 @@ contract RainbowToken is Context {
         Color color,
         Color blendingColor
     );
-    event GameOver(address indexed winner);
+    event GameOver(address indexed winner, uint256 amount);
 
     constructor(
         uint8 r,
@@ -83,7 +84,7 @@ contract RainbowToken is Context {
     function selfBlend() public payable onlyPlayer {
         if (msg.value < SELF_BLEND_PRICE) revert InsufficientValue(msg.value);
         Player storage _player = _players[_msgSender()];
-        _mergeColors(_player.color, _player.originalColor);
+        _blend(_player.color, _player.originalColor);
         emit SelfBlended(_msgSender(), _player.color);
     }
 
@@ -103,8 +104,11 @@ contract RainbowToken is Context {
             otherPlayer.color.b != blendingColor.b
         ) revert ColorNotMatching(blendingColor, otherPlayer.color);
 
+        (bool sent, ) = blendingAccount.call{value: msg.value / 2}("");
+        if (!sent) revert EtherTransferFail(blendingAccount);
+
         Color storage _color = _players[_msgSender()].color;
-        _mergeColors(_color, blendingColor);
+        _blend(_color, blendingColor);
 
         emit Blended(_msgSender(), blendingAccount, _color, blendingColor);
     }
@@ -118,7 +122,7 @@ contract RainbowToken is Context {
 
         if (r * r + g * g + b * b > 25) revert PlayerNotWinner(_msgSender());
 
-        emit GameOver(_msgSender());
+        emit GameOver(_msgSender(), address(this).balance);
 
         selfdestruct(payable(_msgSender()));
     }
@@ -176,9 +180,7 @@ contract RainbowToken is Context {
         return _players[account].blendingPrice > 0;
     }
 
-    function _mergeColors(Color storage _color, Color memory blendingColor)
-        internal
-    {
+    function _blend(Color storage _color, Color memory blendingColor) internal {
         _color.r = uint8((uint16(_color.r) + uint16(blendingColor.r)) / 2);
         _color.g = uint8((uint16(_color.g) + uint16(blendingColor.g)) / 2);
         _color.b = uint8((uint16(_color.b) + uint16(blendingColor.b)) / 2);
