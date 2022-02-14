@@ -1,5 +1,5 @@
 {
-  "name": "@rainbow-token/contracts",
+  "name": "rainbow-token-contracts",
   "version": "0.0.1-semantic-release",
   "description": "Rainbow Token Smart Contracts",
   "license": "MIT",
