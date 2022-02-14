@@ -1,14 +1,30 @@
 {
   "name": "@rainbow-token/contracts",
-  "version": "0.0.1",
+  "version": "0.0.1-semantic-release",
   "description": "Rainbow Token Smart Contracts",
   "license": "MIT",
+  "files": [
+    "lib",
+    "contracts"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "author": "Loïc Vincent-Genod (https://github.com/VGLoic)",
+  "homepage": "https://github.com/VGLoic/rainbow-token-contracts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VGLoic/rainbow-token-contracts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/VGLoic/rainbow-token-contracts/issues"
+  },
   "scripts": {
+    "build": "hardhat compile && tsc --project tsconfig-publish.json && cp typechain/*.d.ts lib/typechain/",
     "compile": "hardhat compile",
     "typechain": "hardhat typechain",
     "test": "hardhat test",
     "test:cover": "hardhat coverage",
-    "void:deploy": "hardhat deploy --report-gas",
+    "void:deploy": "hardhat deploy --report-gas",    
     "goerli:deploy": "hardhat --network goerli deploy",
     "solhint": "solhint 'contracts/**/*.sol'",
     "format": "prettier --write --ignore-unknown test contracts",
@@ -49,7 +65,8 @@
     "solidity-coverage": "^0.7.18",
     "ts-node": "^10.5.0",
     "typechain": "^5.2.0",
-    "typescript": "^4.5.5"
+    "typescript": "^4.5.5",
+    "semantic-release": "^19.0.2"
   },
   "lint-staged": {
     "contracts/**/*": "prettier --write --ignore-unknown",

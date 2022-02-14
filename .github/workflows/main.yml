@@ -20,6 +20,7 @@ jobs:
       - run: npm install
       - run: npm run compile
       - run: npm test
+      - run: npm run build
   deploy:
     needs: test
     runs-on: ubuntu-latest
@@ -37,4 +38,10 @@ jobs:
         env:
           INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
           GOERLI_MNEMONIC: ${{ secrets.GOERLI_MNEMONIC }}
+      - run: npm run build
+      - name: Semantic release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
         
