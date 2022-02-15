@@ -6,7 +6,8 @@
   "files": [
     "lib",
     "contracts",
-    "deploy"
+    "deploy",
+    "artifacts"
   ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
