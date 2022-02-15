@@ -27,7 +27,7 @@
     "test:cover": "hardhat coverage",
     "local:node": "hardhat node",
     "void:deploy": "hardhat deploy --report-gas",  
-    "local:deploy": "hardhat --network local deploy",
+    "local:deploy": "hardhat --network hardhat deploy",
     "goerli:deploy": "hardhat --network goerli deploy",
     "solhint": "solhint 'contracts/**/*.sol'",
     "format": "prettier --write --ignore-unknown test contracts",
