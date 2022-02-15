@@ -1,5 +1,5 @@
+import { JsonFragment, Fragment } from "@ethersproject/abi";
 // Rainbow Token
-import { ContractInterface } from "ethers";
 import rainbowTokenGoerliDeployment from "./deployments/goerli/RainbowToken.json";
 import rainbowTokenLocalhostDeployment from "./deployments/localhost/RainbowToken.json";
 
@@ -11,7 +11,7 @@ export enum Network {
 }
 
 export type NetworkConfiguration = {
-    abi: ContractInterface,
+    abi: (string | JsonFragment | Fragment)[],
     bytecode: string,
     address: string
 }
