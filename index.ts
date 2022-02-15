@@ -1,37 +1,47 @@
 // Rainbow Token
+import { ContractInterface } from "ethers";
 import rainbowTokenGoerliDeployment from "./deployments/goerli/RainbowToken.json";
+import rainbowTokenLocalhostDeployment from "./deployments/localhost/RainbowToken.json";
 
 export * from "./typechain";
 
-enum Network {
+export enum Network {
     goerli = 5,
-    local = 31337
+    localhost = 31337
 }
-type ContractAddresses = { [K in number]?: string }
 
-function getNetworkAddressFactory(contractAddresses: ContractAddresses): ((network: number, addressOverrides?: ContractAddresses) => string) {
-    return function getNetworkAddress(network: number, addressOverrides?: ContractAddresses) {
-        if (addressOverrides) {
-            const overridenAddress = addressOverrides[network];
-            if (overridenAddress) return overridenAddress;
+export type NetworkConfiguration = {
+    abi: ContractInterface,
+    bytecode: string,
+    address: string
+}
+export type NetworkConfigurations = Record<number, NetworkConfiguration>;
+
+function getNetworkConfigurationFactory(networkConfigurations: NetworkConfigurations): ((network: number) => NetworkConfiguration) {
+    return function getNetworkConfiguration(network: number) {
+        const config = networkConfigurations[network];
+        if (!config) {
+            throw new Error(`Configuration not found for network: ${network}`);
         }
-        const address = contractAddresses[network];
-        if (!address) {
-            throw new Error(`Address not found for network: ${network}`);
-        }
-        return address;
+        return config;
     }
 }
 
-const rainbowTokenAddresses = {
-    [Network.goerli]: rainbowTokenGoerliDeployment.address,
-};
+const rainbowTokenConfigurations: NetworkConfigurations = {
+    [Network.goerli]: {
+        abi: rainbowTokenGoerliDeployment.abi,
+        bytecode: rainbowTokenGoerliDeployment.bytecode,
+        address: rainbowTokenGoerliDeployment.address
+    },
+    [Network.localhost]: {
+        abi: rainbowTokenLocalhostDeployment.abi,
+        bytecode: rainbowTokenLocalhostDeployment.bytecode,
+        address: rainbowTokenLocalhostDeployment.address
+    }
+}
 
 const rainbowToken = {
-    abi: rainbowTokenGoerliDeployment.abi,
-    bytecode: rainbowTokenGoerliDeployment.bytecode,
-    getNetworkAddress: getNetworkAddressFactory(rainbowTokenAddresses),
-    addresses: rainbowTokenAddresses
+    getNetworkConfiguration: getNetworkConfigurationFactory(rainbowTokenConfigurations),
 }
 
 export const contracts = { rainbowToken }
