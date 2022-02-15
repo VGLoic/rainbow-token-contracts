@@ -26,6 +26,12 @@ function getNetworkConfigurationFactory(networkConfigurations: NetworkConfigurat
         return config;
     }
 }
+function isNetworkSupportedFactory(networkConfigurations: NetworkConfigurations): ((network: number) => boolean) {
+    return function isNetworkSupported(network: number) {
+        const config = networkConfigurations[network];
+        return Boolean(config);
+    }
+}
 
 const rainbowTokenConfigurations: NetworkConfigurations = {
     [Network.goerli]: {
@@ -41,6 +47,8 @@ const rainbowTokenConfigurations: NetworkConfigurations = {
 }
 
 const rainbowToken = {
+    supportedNetworks: Object.keys(rainbowTokenConfigurations),
+    isNetworkSupported: isNetworkSupportedFactory(rainbowTokenConfigurations),
     getNetworkConfiguration: getNetworkConfigurationFactory(rainbowTokenConfigurations),
 }
 
