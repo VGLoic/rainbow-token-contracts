@@ -41,6 +41,7 @@ const rainbowTokenConfigurations: NetworkConfigurations = {
 }
 
 const rainbowToken = {
+    supportedNetworks: Object.keys(rainbowTokenConfigurations),
     getNetworkConfiguration: getNetworkConfigurationFactory(rainbowTokenConfigurations),
 }
 
