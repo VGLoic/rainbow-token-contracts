@@ -1,0 +1,712 @@
+{
+  "address": "0xA0E4C418D7243220aF79345E77aA2Aa4f4C2De98",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "r",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint8",
+          "name": "g",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint8",
+          "name": "b",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "blendingAccount",
+          "type": "address"
+        }
+      ],
+      "name": "BlendingAccountNotAPlayer",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "r",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "g",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "b",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct RainbowToken.Color",
+          "name": "blendingColor",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "r",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "g",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "b",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct RainbowToken.Color",
+          "name": "actualColor",
+          "type": "tuple"
+        }
+      ],
+      "name": "ColorNotMatching",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        }
+      ],
+      "name": "EtherTransferFail",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "InsufficientValue",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "r",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint8",
+          "name": "g",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint8",
+          "name": "b",
+          "type": "uint8"
+        }
+      ],
+      "name": "InvalidTargetColor",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidZeroBlendingPrice",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "PlayerNotWinner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "SenderAlreadyPlayer",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "SenderNotAPlayer",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "blendingAccount",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "r",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "g",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "b",
+              "type": "uint8"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct RainbowToken.Color",
+          "name": "color",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "r",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "g",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "b",
+              "type": "uint8"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct RainbowToken.Color",
+          "name": "blendingColor",
+          "type": "tuple"
+        }
+      ],
+      "name": "Blended",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blendingPrice",
+          "type": "uint256"
+        }
+      ],
+      "name": "BlendingPriceUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "winner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "GameOver",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "r",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "g",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "b",
+              "type": "uint8"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct RainbowToken.Color",
+          "name": "originalColor",
+          "type": "tuple"
+        }
+      ],
+      "name": "PlayerJoined",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "r",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "g",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "b",
+              "type": "uint8"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct RainbowToken.Color",
+          "name": "color",
+          "type": "tuple"
+        }
+      ],
+      "name": "SelfBlended",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "DEFAULT_BLENDING_PRICE",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ENTRY_FEE",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "SELF_BLEND_PRICE",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "blendingAccount",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "r",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "g",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "b",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct RainbowToken.Color",
+          "name": "blendingColor",
+          "type": "tuple"
+        }
+      ],
+      "name": "blend",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "claimVictory",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "getPlayer",
+      "outputs": [
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "uint8",
+                  "name": "r",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "g",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "b",
+                  "type": "uint8"
+                }
+              ],
+              "internalType": "struct RainbowToken.Color",
+              "name": "originalColor",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint8",
+                  "name": "r",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "g",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "b",
+                  "type": "uint8"
+                }
+              ],
+              "internalType": "struct RainbowToken.Color",
+              "name": "color",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "blendingPrice",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct RainbowToken.Player",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getTargetColor",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "r",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "g",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "b",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct RainbowToken.Color",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "isPlayer",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "joinGame",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "selfBlend",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "blendingPrice",
+          "type": "uint256"
+        }
+      ],
+      "name": "updateBlendingPrice",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x19289dbb856b2db215e52eef3b66e0ebcb84c3847feac7c76f6911e7f12fa831",
+  "receipt": {
+    "to": null,
+    "from": "0x08C82E599e9Db54B30279bE3A64839F892e9EfE0",
+    "contractAddress": "0xA0E4C418D7243220aF79345E77aA2Aa4f4C2De98",
+    "transactionIndex": 0,
+    "gasUsed": "1634235",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x46e7a2f1da8201fd4b3457d906958838decb432448f35c628bcdd248f0e246f4",
+    "transactionHash": "0x19289dbb856b2db215e52eef3b66e0ebcb84c3847feac7c76f6911e7f12fa831",
+    "logs": [],
+    "blockNumber": 1,
+    "cumulativeGasUsed": "1634235",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    210,
+    120,
+    70
+  ],
+  "numDeployments": 1,
+  "solcInputHash": "544dd5d883a09b9d1335fe87fa9ab8b9",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint8\",\"name\":\"r\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"g\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"b\",\"type\":\"uint8\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"blendingAccount\",\"type\":\"address\"}],\"name\":\"BlendingAccountNotAPlayer\",\"type\":\"error\"},{\"inputs\":[{\"components\":[{\"internalType\":\"uint8\",\"name\":\"r\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"g\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"b\",\"type\":\"uint8\"}],\"internalType\":\"struct RainbowToken.Color\",\"name\":\"blendingColor\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint8\",\"name\":\"r\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"g\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"b\",\"type\":\"uint8\"}],\"internalType\":\"struct RainbowToken.Color\",\"name\":\"actualColor\",\"type\":\"tuple\"}],\"name\":\"ColorNotMatching\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"}],\"name\":\"EtherTransferFail\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"InsufficientValue\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint8\",\"name\":\"r\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"g\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"b\",\"type\":\"uint8\"}],\"name\":\"InvalidTargetColor\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidZeroBlendingPrice\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"PlayerNotWinner\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"SenderAlreadyPlayer\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"SenderNotAPlayer\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"blendingAccount\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"uint8\",\"name\":\"r\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"g\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"b\",\"type\":\"uint8\"}],\"indexed\":false,\"internalType\":\"struct RainbowToken.Color\",\"name\":\"color\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint8\",\"name\":\"r\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"g\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"b\",\"type\":\"uint8\"}],\"indexed\":false,\"internalType\":\"struct RainbowToken.Color\",\"name\":\"blendingColor\",\"type\":\"tuple\"}],\"name\":\"Blended\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"blendingPrice\",\"type\":\"uint256\"}],\"name\":\"BlendingPriceUpdated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"winner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"GameOver\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"uint8\",\"name\":\"r\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"g\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"b\",\"type\":\"uint8\"}],\"indexed\":false,\"internalType\":\"struct RainbowToken.Color\",\"name\":\"originalColor\",\"type\":\"tuple\"}],\"name\":\"PlayerJoined\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"uint8\",\"name\":\"r\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"g\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"b\",\"type\":\"uint8\"}],\"indexed\":false,\"internalType\":\"struct RainbowToken.Color\",\"name\":\"color\",\"type\":\"tuple\"}],\"name\":\"SelfBlended\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"DEFAULT_BLENDING_PRICE\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"ENTRY_FEE\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"SELF_BLEND_PRICE\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"blendingAccount\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"uint8\",\"name\":\"r\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"g\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"b\",\"type\":\"uint8\"}],\"internalType\":\"struct RainbowToken.Color\",\"name\":\"blendingColor\",\"type\":\"tuple\"}],\"name\":\"blend\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"claimVictory\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"getPlayer\",\"outputs\":[{\"components\":[{\"components\":[{\"internalType\":\"uint8\",\"name\":\"r\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"g\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"b\",\"type\":\"uint8\"}],\"internalType\":\"struct RainbowToken.Color\",\"name\":\"originalColor\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint8\",\"name\":\"r\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"g\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"b\",\"type\":\"uint8\"}],\"internalType\":\"struct RainbowToken.Color\",\"name\":\"color\",\"type\":\"tuple\"},{\"internalType\":\"uint256\",\"name\":\"blendingPrice\",\"type\":\"uint256\"}],\"internalType\":\"struct RainbowToken.Player\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getTargetColor\",\"outputs\":[{\"components\":[{\"internalType\":\"uint8\",\"name\":\"r\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"g\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"b\",\"type\":\"uint8\"}],\"internalType\":\"struct RainbowToken.Color\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"isPlayer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"joinGame\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"selfBlend\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"blendingPrice\",\"type\":\"uint256\"}],\"name\":\"updateBlendingPrice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/RainbowToken.sol\":\"RainbowToken\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/utils/Context.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts v4.4.1 (utils/Context.sol)\\n\\npragma solidity ^0.8.0;\\n\\n/**\\n * @dev Provides information about the current execution context, including the\\n * sender of the transaction and its data. While these are generally available\\n * via msg.sender and msg.data, they should not be accessed in such a direct\\n * manner, since when dealing with meta-transactions the account sending and\\n * paying for execution may not be the actual sender (as far as an application\\n * is concerned).\\n *\\n * This contract is only required for intermediate, library-like contracts.\\n */\\nabstract contract Context {\\n    function _msgSender() internal view virtual returns (address) {\\n        return msg.sender;\\n    }\\n\\n    function _msgData() internal view virtual returns (bytes calldata) {\\n        return msg.data;\\n    }\\n}\\n\",\"keccak256\":\"0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7\",\"license\":\"MIT\"},\"contracts/RainbowToken.sol\":{\"content\":\"//SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\nimport {Context} from \\\"@openzeppelin/contracts/utils/Context.sol\\\";\\n\\ncontract RainbowToken is Context {\\n    struct Color {\\n        uint8 r;\\n        uint8 g;\\n        uint8 b;\\n    }\\n\\n    struct Player {\\n        Color originalColor;\\n        Color color;\\n        uint256 blendingPrice;\\n    }\\n\\n    uint256 public constant DEFAULT_BLENDING_PRICE = 0.1 ether;\\n    uint256 public constant SELF_BLEND_PRICE = 0.5 ether;\\n    uint256 public constant ENTRY_FEE = 0.1 ether;\\n\\n    Color private _targetColor;\\n\\n    mapping(address => Player) private _players;\\n\\n    error InvalidTargetColor(uint8 r, uint8 g, uint8 b);\\n    error SenderAlreadyPlayer(address account);\\n    error InsufficientValue(uint256 value);\\n    error SenderNotAPlayer(address account);\\n    error BlendingAccountNotAPlayer(address blendingAccount);\\n    error InvalidZeroBlendingPrice();\\n    error ColorNotMatching(Color blendingColor, Color actualColor);\\n    error PlayerNotWinner(address account);\\n    error EtherTransferFail(address recipient);\\n\\n    event PlayerJoined(address indexed account, Color originalColor);\\n    event BlendingPriceUpdated(address indexed account, uint256 blendingPrice);\\n    event SelfBlended(address indexed account, Color color);\\n    event Blended(\\n        address indexed account,\\n        address indexed blendingAccount,\\n        Color color,\\n        Color blendingColor\\n    );\\n    event GameOver(address indexed winner, uint256 amount);\\n\\n    constructor(\\n        uint8 r,\\n        uint8 g,\\n        uint8 b\\n    ) {\\n        if (r <= 5 || r >= 250 || g <= 5 || g >= 250 || b <= 5 || b >= 250)\\n            revert InvalidTargetColor(r, g, b);\\n        _targetColor = Color({r: r, g: g, b: b});\\n    }\\n\\n    modifier onlyPlayer() {\\n        if (!_isPlayer(_msgSender())) revert SenderNotAPlayer(_msgSender());\\n        _;\\n    }\\n\\n    function joinGame() public payable {\\n        if (_isPlayer(_msgSender())) revert SenderAlreadyPlayer(_msgSender());\\n        if (msg.value < ENTRY_FEE) revert InsufficientValue(msg.value);\\n\\n        Color memory originalColor = _generateOriginalColor();\\n\\n        _players[_msgSender()] = Player({\\n            originalColor: originalColor,\\n            color: originalColor,\\n            blendingPrice: DEFAULT_BLENDING_PRICE\\n        });\\n\\n        emit PlayerJoined(_msgSender(), originalColor);\\n    }\\n\\n    function updateBlendingPrice(uint256 blendingPrice) public onlyPlayer {\\n        if (blendingPrice == 0) revert InvalidZeroBlendingPrice();\\n        _players[_msgSender()].blendingPrice = blendingPrice;\\n        emit BlendingPriceUpdated(_msgSender(), blendingPrice);\\n    }\\n\\n    function selfBlend() public payable onlyPlayer {\\n        if (msg.value < SELF_BLEND_PRICE) revert InsufficientValue(msg.value);\\n        Player storage _player = _players[_msgSender()];\\n        _blend(_player.color, _player.originalColor);\\n        emit SelfBlended(_msgSender(), _player.color);\\n    }\\n\\n    function blend(address blendingAccount, Color calldata blendingColor)\\n        public\\n        payable\\n        onlyPlayer\\n    {\\n        if (!_isPlayer(blendingAccount))\\n            revert BlendingAccountNotAPlayer(blendingAccount);\\n        Player memory otherPlayer = _players[blendingAccount];\\n        if (msg.value < otherPlayer.blendingPrice)\\n            revert InsufficientValue(msg.value);\\n        if (\\n            otherPlayer.color.r != blendingColor.r ||\\n            otherPlayer.color.g != blendingColor.g ||\\n            otherPlayer.color.b != blendingColor.b\\n        ) revert ColorNotMatching(blendingColor, otherPlayer.color);\\n\\n        (bool sent, ) = blendingAccount.call{value: msg.value / 2}(\\\"\\\");\\n        if (!sent) revert EtherTransferFail(blendingAccount);\\n\\n        Color storage _color = _players[_msgSender()].color;\\n        _blend(_color, blendingColor);\\n\\n        emit Blended(_msgSender(), blendingAccount, _color, blendingColor);\\n    }\\n\\n    function claimVictory() public onlyPlayer {\\n        Color memory playerColor = _players[_msgSender()].color;\\n\\n        uint16 r = uint16(_absSub(playerColor.r, _targetColor.r));\\n        uint16 g = uint16(_absSub(playerColor.g, _targetColor.g));\\n        uint16 b = uint16(_absSub(playerColor.b, _targetColor.b));\\n\\n        if (r * r + g * g + b * b > 25) revert PlayerNotWinner(_msgSender());\\n\\n        emit GameOver(_msgSender(), address(this).balance);\\n\\n        selfdestruct(payable(_msgSender()));\\n    }\\n\\n    function isPlayer(address account) public view returns (bool) {\\n        return _isPlayer(account);\\n    }\\n\\n    function getPlayer(address account) public view returns (Player memory) {\\n        return _players[account];\\n    }\\n\\n    function getTargetColor() public view returns (Color memory) {\\n        return _targetColor;\\n    }\\n\\n    function _absSub(uint8 a, uint8 b) internal pure returns (uint8) {\\n        unchecked {\\n            if (a > b) {\\n                return a - b;\\n            }\\n            return b - a;\\n        }\\n    }\\n\\n    function _generateOriginalColor() internal view returns (Color memory) {\\n        uint256 defaultColorSeed = uint256(\\n            keccak256(\\n                abi.encodePacked(\\n                    _msgSender(),\\n                    blockhash(block.number - 1),\\n                    block.timestamp\\n                )\\n            )\\n        );\\n\\n        Color memory color = Color({\\n            r: _toPrimary(uint8((defaultColorSeed & 0xff0000) / 0xffff)),\\n            g: _toPrimary(uint8((defaultColorSeed & 0xff00) / 0xff)),\\n            b: _toPrimary(uint8(defaultColorSeed & 0xff))\\n        });\\n\\n        return color;\\n    }\\n\\n    function _toPrimary(uint8 colorComponent) internal pure returns (uint8) {\\n        if (colorComponent > 127) {\\n            return 255;\\n        } else {\\n            return 0;\\n        }\\n    }\\n\\n    function _isPlayer(address account) internal view returns (bool) {\\n        return _players[account].blendingPrice > 0;\\n    }\\n\\n    function _blend(Color storage _color, Color memory blendingColor) internal {\\n        _color.r = uint8((uint16(_color.r) + uint16(blendingColor.r)) / 2);\\n        _color.g = uint8((uint16(_color.g) + uint16(blendingColor.g)) / 2);\\n        _color.b = uint8((uint16(_color.b) + uint16(blendingColor.b)) / 2);\\n    }\\n}\\n\",\"keccak256\":\"0x7ba06c9c5e3776a275b91fc9527d8e82c1ad632cee875d475c9fcd647c364080\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x60806040523480156200001157600080fd5b5060405162001e8038038062001e80833981810160405281019062000037919062000183565b60058360ff161115806200004f575060fa8360ff1610155b806200005f575060058260ff1611155b806200006f575060fa8260ff1610155b806200007f575060058160ff1611155b806200008f575060fa8160ff1610155b15620000d8578282826040517f4aaa22c3000000000000000000000000000000000000000000000000000000008152600401620000cf93929190620001ea565b60405180910390fd5b60405180606001604052808460ff1681526020018360ff1681526020018260ff168152506000808201518160000160006101000a81548160ff021916908360ff16021790555060208201518160000160016101000a81548160ff021916908360ff16021790555060408201518160000160026101000a81548160ff021916908360ff1602179055509050505050506200024e565b6000815190506200017d8162000234565b92915050565b6000806000606084860312156200019957600080fd5b6000620001a9868287016200016c565b9350506020620001bc868287016200016c565b9250506040620001cf868287016200016c565b9150509250925092565b620001e48162000227565b82525050565b6000606082019050620002016000830186620001d9565b620002106020830185620001d9565b6200021f6040830184620001d9565b949350505050565b600060ff82169050919050565b6200023f8162000227565b81146200024b57600080fd5b50565b611c22806200025e6000396000f3fe60806040526004361061009c5760003560e01c80636fe876b1116100645780636fe876b114610179578063723c4962146101835780638bc9a128146101ae578063d4f77b1c146101d7578063e4f28e89146101e1578063f6d361cc1461020c5761009c565b806309c95e10146100a15780631abddf33146100de5780633c51de82146100f55780635c12cd4b14610111578063641a2e091461014e575b600080fd5b3480156100ad57600080fd5b506100c860048036038101906100c391906113a9565b610237565b6040516100d59190611777565b60405180910390f35b3480156100ea57600080fd5b506100f3610249565b005b61010f600480360381019061010a91906113d2565b6104bf565b005b34801561011d57600080fd5b50610138600480360381019061013391906113a9565b610930565b604051610145919061181a565b60405180910390f35b34801561015a57600080fd5b50610163610a69565b60405161017091906117bb565b60405180910390f35b610181610ada565b005b34801561018f57600080fd5b50610198610c96565b6040516101a59190611835565b60405180910390f35b3480156101ba57600080fd5b506101d560048036038101906101d09190611437565b610ca2565b005b6101df610ddb565b005b3480156101ed57600080fd5b506101f6611037565b6040516102039190611835565b60405180910390f35b34801561021857600080fd5b50610221611043565b60405161022e9190611835565b60405180910390f35b60006102428261104f565b9050919050565b61025961025461109d565b61104f565b6102a15761026561109d565b6040517fa6b39856000000000000000000000000000000000000000000000000000000008152600401610298919061175c565b60405180910390fd5b6000600160006102af61109d565b73ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000206001016040518060600160405290816000820160009054906101000a900460ff1660ff1660ff1681526020016000820160019054906101000a900460ff1660ff1660ff1681526020016000820160029054906101000a900460ff1660ff1660ff16815250509050600061037182600001516000800160009054906101000a900460ff166110a5565b60ff169050600061039783602001516000800160019054906101000a900460ff166110a5565b60ff16905060006103bd84604001516000800160029054906101000a900460ff166110a5565b60ff169050601981826103d09190611931565b83846103dc9190611931565b85866103e89190611931565b6103f29190611897565b6103fc9190611897565b61ffff16111561044a5761040e61109d565b6040517f6599915c000000000000000000000000000000000000000000000000000000008152600401610441919061175c565b60405180910390fd5b61045261109d565b73ffffffffffffffffffffffffffffffffffffffff167f864bccc7be387c1af59ea4287b5f055331e0ab6b9b546516d6265450d296bb15476040516104979190611835565b60405180910390a26104a761109d565b73ffffffffffffffffffffffffffffffffffffffff16ff5b6104cf6104ca61109d565b61104f565b610517576104db61109d565b6040517fa6b3985600000000000000000000000000000000000000000000000000000000815260040161050e919061175c565b60405180910390fd5b6105208261104f565b61056157816040517fac8319b1000000000000000000000000000000000000000000000000000000008152600401610558919061175c565b60405180910390fd5b6000600160008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020604051806060016040529081600082016040518060600160405290816000820160009054906101000a900460ff1660ff1660ff1681526020016000820160019054906101000a900460ff1660ff1660ff1681526020016000820160029054906101000a900460ff1660ff1660ff16815250508152602001600182016040518060600160405290816000820160009054906101000a900460ff1660ff1660ff1681526020016000820160019054906101000a900460ff1660ff1660ff1681526020016000820160029054906101000a900460ff1660ff1660ff16815250508152602001600282015481525050905080604001513410156106d857346040517fa518cf3c0000000000000000000000000000000000000000000000000000000081526004016106cf9190611835565b60405180910390fd5b8160000160208101906106eb9190611460565b60ff1681602001516000015160ff1614158061072757508160200160208101906107159190611460565b60ff1681602001516020015160ff1614155b8061075257508160400160208101906107409190611460565b60ff1681602001516040015160ff1614155b1561079a578181602001516040517fe55977c3000000000000000000000000000000000000000000000000000000008152600401610791929190611792565b60405180910390fd5b60008373ffffffffffffffffffffffffffffffffffffffff166002346107c09190611900565b6040516107cc90611747565b60006040518083038185875af1925050503d8060008114610809576040519150601f19603f3d011682016040523d82523d6000602084013e61080e565b606091505b505090508061085457836040517fdd74906f00000000000000000000000000000000000000000000000000000000815260040161084b919061175c565b60405180910390fd5b60006001600061086261109d565b73ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060010190506108bb81858036038101906108b6919061140e565b6110cb565b8473ffffffffffffffffffffffffffffffffffffffff166108da61109d565b73ffffffffffffffffffffffffffffffffffffffff167f4d8f882d09d80972f0145b1f2468ff8a4daf40052a9ec196a05794a889d3f29683876040516109219291906117f1565b60405180910390a35050505050565b610938611298565b600160008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020604051806060016040529081600082016040518060600160405290816000820160009054906101000a900460ff1660ff1660ff1681526020016000820160019054906101000a900460ff1660ff1660ff1681526020016000820160029054906101000a900460ff1660ff1660ff16815250508152602001600182016040518060600160405290816000820160009054906101000a900460ff1660ff1660ff1681526020016000820160019054906101000a900460ff1660ff1660ff1681526020016000820160029054906101000a900460ff1660ff1660ff168152505081526020016002820154815250509050919050565b610a716112c5565b60006040518060600160405290816000820160009054906101000a900460ff1660ff1660ff1681526020016000820160019054906101000a900460ff1660ff1660ff1681526020016000820160029054906101000a900460ff1660ff1660ff1681525050905090565b610aea610ae561109d565b61104f565b610b3257610af661109d565b6040517fa6b39856000000000000000000000000000000000000000000000000000000008152600401610b29919061175c565b60405180910390fd5b6706f05b59d3b20000341015610b7f57346040517fa518cf3c000000000000000000000000000000000000000000000000000000008152600401610b769190611835565b60405180910390fd5b600060016000610b8d61109d565b73ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000209050610c3b81600101826000016040518060600160405290816000820160009054906101000a900460ff1660ff1660ff1681526020016000820160019054906101000a900460ff1660ff1660ff1681526020016000820160029054906101000a900460ff1660ff1660ff16815250506110cb565b610c4361109d565b73ffffffffffffffffffffffffffffffffffffffff167f7bccfc393968f47d8bcc63bcdc6ae127442c4ebef9a39d4c96b7707510850a5682600101604051610c8b91906117d6565b60405180910390a250565b67016345785d8a000081565b610cb2610cad61109d565b61104f565b610cfa57610cbe61109d565b6040517fa6b39856000000000000000000000000000000000000000000000000000000008152600401610cf1919061175c565b60405180910390fd5b6000811415610d35576040517f899598f100000000000000000000000000000000000000000000000000000000815260040160405180910390fd5b8060016000610d4261109d565b73ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060020181905550610d8b61109d565b73ffffffffffffffffffffffffffffffffffffffff167f9dad8a821e2f8f51fbfcd99e32dd5b871076d7517ce5c1c01fe7f36bad08d0d082604051610dd09190611835565b60405180910390a250565b610deb610de661109d565b61104f565b15610e3457610df861109d565b6040517f66ea9f2e000000000000000000000000000000000000000000000000000000008152600401610e2b919061175c565b60405180910390fd5b67016345785d8a0000341015610e8157346040517fa518cf3c000000000000000000000000000000000000000000000000000000008152600401610e789190611835565b60405180910390fd5b6000610e8b6111bc565b9050604051806060016040528082815260200182815260200167016345785d8a000081525060016000610ebc61109d565b73ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060008201518160000160008201518160000160006101000a81548160ff021916908360ff16021790555060208201518160000160016101000a81548160ff021916908360ff16021790555060408201518160000160026101000a81548160ff021916908360ff160217905550505060208201518160010160008201518160000160006101000a81548160ff021916908360ff16021790555060208201518160000160016101000a81548160ff021916908360ff16021790555060408201518160000160026101000a81548160ff021916908360ff160217905550505060408201518160020155905050610fe761109d565b73ffffffffffffffffffffffffffffffffffffffff167ff93af79224d37bfb0f4182ee1dc777563270ec6a208db996b70a5533df0b408b8260405161102c91906117bb565b60405180910390a250565b6706f05b59d3b2000081565b67016345785d8a000081565b600080600160008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060020154119050919050565b600033905090565b60008160ff168360ff1611156110bf5781830390506110c5565b82820390505b92915050565b6002816000015160ff168360000160009054906101000a900460ff1660ff166110f49190611897565b6110fe91906118cf565b8260000160006101000a81548160ff021916908360ff1602179055506002816020015160ff168360000160019054906101000a900460ff1660ff166111439190611897565b61114d91906118cf565b8260000160016101000a81548160ff021916908360ff1602179055506002816040015160ff168360000160029054906101000a900460ff1660ff166111929190611897565b61119c91906118cf565b8260000160026101000a81548160ff021916908360ff1602179055505050565b6111c46112c5565b60006111ce61109d565b6001436111db919061196d565b40426040516020016111ef9392919061170a565b6040516020818303038152906040528051906020012060001c90506000604051806060016040528061123261ffff62ff0000861661122d9190611900565b611277565b60ff16815260200161125360ff61ff00861661124e9190611900565b611277565b60ff16815260200161126760ff8516611277565b60ff168152509050809250505090565b6000607f8260ff16111561128e5760ff9050611293565b600090505b919050565b60405180606001604052806112ab6112c5565b81526020016112b86112c5565b8152602001600081525090565b6040518060600160405280600060ff168152602001600060ff168152602001600060ff1681525090565b6000813590506112fe81611ba7565b92915050565b60006060828403121561131657600080fd5b81905092915050565b60006060828403121561133157600080fd5b61133b6060611850565b9050600061134b84828501611394565b600083015250602061135f84828501611394565b602083015250604061137384828501611394565b60408301525092915050565b60008135905061138e81611bbe565b92915050565b6000813590506113a381611bd5565b92915050565b6000602082840312156113bb57600080fd5b60006113c9848285016112ef565b91505092915050565b600080608083850312156113e557600080fd5b60006113f3858286016112ef565b925050602061140485828601611304565b9150509250929050565b60006060828403121561142057600080fd5b600061142e8482850161131f565b91505092915050565b60006020828403121561144957600080fd5b60006114578482850161137f565b91505092915050565b60006020828403121561147257600080fd5b600061148084828501611394565b91505092915050565b611492816119ae565b82525050565b6114a96114a4826119ae565b611a9a565b82525050565b6114b8816119c0565b82525050565b6114cf6114ca826119cc565b611aac565b82525050565b60006114e2600083611875565b91506114ed82611ba4565b600082019050919050565b606082016115096000830183611880565b61151660008501826116fb565b506115246020830183611880565b61153160208501826116fb565b5061153f6040830183611880565b61154c60408501826116fb565b50505050565b60608201600082015161156860008501826116fb565b50602082015161157b60208501826116fb565b50604082015161158e60408501826116fb565b50505050565b6060820160008201516115aa60008501826116fb565b5060208201516115bd60208501826116fb565b5060408201516115d060408501826116fb565b50505050565b6060820160008083015490506115eb81611a1b565b6115f860008601826116fb565b5061160281611a35565b61160f60208601826116fb565b5061161981611a4f565b61162660408601826116fb565b5050505050565b60608201600080830154905061164281611a1b565b61164f60008601826116fb565b5061165981611a35565b61166660208601826116fb565b5061167081611a4f565b61167d60408601826116fb565b5050505050565b60e08201600082015161169a6000850182611552565b5060208201516116ad6060850182611552565b5060408201516116c060c08501826116c6565b50505050565b6116cf81611a04565b82525050565b6116de81611a04565b82525050565b6116f56116f082611a04565b611ac8565b82525050565b61170481611a0e565b82525050565b60006117168286611498565b60148201915061172682856114be565b60208201915061173682846116e4565b602082019150819050949350505050565b6000611752826114d5565b9150819050919050565b60006020820190506117716000830184611489565b92915050565b600060208201905061178c60008301846114af565b92915050565b600060c0820190506117a760008301856114f8565b6117b46060830184611594565b9392505050565b60006060820190506117d06000830184611594565b92915050565b60006060820190506117eb600083018461162d565b92915050565b600060c08201905061180660008301856115d6565b61181360608301846114f8565b9392505050565b600060e08201905061182f6000830184611684565b92915050565b600060208201905061184a60008301846116d5565b92915050565b600061185a61186b565b90506118668282611a69565b919050565b6000604051905090565b600081905092915050565b600061188f6020840184611394565b905092915050565b60006118a2826119d6565b91506118ad836119d6565b92508261ffff038211156118c4576118c3611ad2565b5b828201905092915050565b60006118da826119d6565b91506118e5836119d6565b9250826118f5576118f4611b01565b5b828204905092915050565b600061190b82611a04565b915061191683611a04565b92508261192657611925611b01565b5b828204905092915050565b600061193c826119d6565b9150611947836119d6565b92508161ffff048311821515161561196257611961611ad2565b5b828202905092915050565b600061197882611a04565b915061198383611a04565b92508282101561199657611995611ad2565b5b828203905092915050565b600060ff82169050919050565b60006119b9826119e4565b9050919050565b60008115159050919050565b6000819050919050565b600061ffff82169050919050565b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b6000819050919050565b600060ff82169050919050565b6000611a2e611a2983611b7d565b6119a1565b9050919050565b6000611a48611a4383611b97565b6119a1565b9050919050565b6000611a62611a5d83611b8a565b6119a1565b9050919050565b611a7282611b5f565b810181811067ffffffffffffffff82111715611a9157611a90611b30565b5b80604052505050565b6000611aa582611ab6565b9050919050565b6000819050919050565b6000611ac182611b70565b9050919050565b6000819050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601260045260246000fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052604160045260246000fd5b6000601f19601f8301169050919050565b60008160601b9050919050565b60008160001c9050919050565b60008160101c9050919050565b60008160081c9050919050565b50565b611bb0816119ae565b8114611bbb57600080fd5b50565b611bc781611a04565b8114611bd257600080fd5b50565b611bde81611a0e565b8114611be957600080fd5b5056fea2646970667358221220c7f86b05bfc4c22ca83cc7103b9b986a4511cf3b72fbbd1814cdea752e0b3f9b64736f6c63430008040033",
+  "deployedBytecode": "0x60806040526004361061009c5760003560e01c80636fe876b1116100645780636fe876b114610179578063723c4962146101835780638bc9a128146101ae578063d4f77b1c146101d7578063e4f28e89146101e1578063f6d361cc1461020c5761009c565b806309c95e10146100a15780631abddf33146100de5780633c51de82146100f55780635c12cd4b14610111578063641a2e091461014e575b600080fd5b3480156100ad57600080fd5b506100c860048036038101906100c391906113a9565b610237565b6040516100d59190611777565b60405180910390f35b3480156100ea57600080fd5b506100f3610249565b005b61010f600480360381019061010a91906113d2565b6104bf565b005b34801561011d57600080fd5b50610138600480360381019061013391906113a9565b610930565b604051610145919061181a565b60405180910390f35b34801561015a57600080fd5b50610163610a69565b60405161017091906117bb565b60405180910390f35b610181610ada565b005b34801561018f57600080fd5b50610198610c96565b6040516101a59190611835565b60405180910390f35b3480156101ba57600080fd5b506101d560048036038101906101d09190611437565b610ca2565b005b6101df610ddb565b005b3480156101ed57600080fd5b506101f6611037565b6040516102039190611835565b60405180910390f35b34801561021857600080fd5b50610221611043565b60405161022e9190611835565b60405180910390f35b60006102428261104f565b9050919050565b61025961025461109d565b61104f565b6102a15761026561109d565b6040517fa6b39856000000000000000000000000000000000000000000000000000000008152600401610298919061175c565b60405180910390fd5b6000600160006102af61109d565b73ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000206001016040518060600160405290816000820160009054906101000a900460ff1660ff1660ff1681526020016000820160019054906101000a900460ff1660ff1660ff1681526020016000820160029054906101000a900460ff1660ff1660ff16815250509050600061037182600001516000800160009054906101000a900460ff166110a5565b60ff169050600061039783602001516000800160019054906101000a900460ff166110a5565b60ff16905060006103bd84604001516000800160029054906101000a900460ff166110a5565b60ff169050601981826103d09190611931565b83846103dc9190611931565b85866103e89190611931565b6103f29190611897565b6103fc9190611897565b61ffff16111561044a5761040e61109d565b6040517f6599915c000000000000000000000000000000000000000000000000000000008152600401610441919061175c565b60405180910390fd5b61045261109d565b73ffffffffffffffffffffffffffffffffffffffff167f864bccc7be387c1af59ea4287b5f055331e0ab6b9b546516d6265450d296bb15476040516104979190611835565b60405180910390a26104a761109d565b73ffffffffffffffffffffffffffffffffffffffff16ff5b6104cf6104ca61109d565b61104f565b610517576104db61109d565b6040517fa6b3985600000000000000000000000000000000000000000000000000000000815260040161050e919061175c565b60405180910390fd5b6105208261104f565b61056157816040517fac8319b1000000000000000000000000000000000000000000000000000000008152600401610558919061175c565b60405180910390fd5b6000600160008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020604051806060016040529081600082016040518060600160405290816000820160009054906101000a900460ff1660ff1660ff1681526020016000820160019054906101000a900460ff1660ff1660ff1681526020016000820160029054906101000a900460ff1660ff1660ff16815250508152602001600182016040518060600160405290816000820160009054906101000a900460ff1660ff1660ff1681526020016000820160019054906101000a900460ff1660ff1660ff1681526020016000820160029054906101000a900460ff1660ff1660ff16815250508152602001600282015481525050905080604001513410156106d857346040517fa518cf3c0000000000000000000000000000000000000000000000000000000081526004016106cf9190611835565b60405180910390fd5b8160000160208101906106eb9190611460565b60ff1681602001516000015160ff1614158061072757508160200160208101906107159190611460565b60ff1681602001516020015160ff1614155b8061075257508160400160208101906107409190611460565b60ff1681602001516040015160ff1614155b1561079a578181602001516040517fe55977c3000000000000000000000000000000000000000000000000000000008152600401610791929190611792565b60405180910390fd5b60008373ffffffffffffffffffffffffffffffffffffffff166002346107c09190611900565b6040516107cc90611747565b60006040518083038185875af1925050503d8060008114610809576040519150601f19603f3d011682016040523d82523d6000602084013e61080e565b606091505b505090508061085457836040517fdd74906f00000000000000000000000000000000000000000000000000000000815260040161084b919061175c565b60405180910390fd5b60006001600061086261109d565b73ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060010190506108bb81858036038101906108b6919061140e565b6110cb565b8473ffffffffffffffffffffffffffffffffffffffff166108da61109d565b73ffffffffffffffffffffffffffffffffffffffff167f4d8f882d09d80972f0145b1f2468ff8a4daf40052a9ec196a05794a889d3f29683876040516109219291906117f1565b60405180910390a35050505050565b610938611298565b600160008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020604051806060016040529081600082016040518060600160405290816000820160009054906101000a900460ff1660ff1660ff1681526020016000820160019054906101000a900460ff1660ff1660ff1681526020016000820160029054906101000a900460ff1660ff1660ff16815250508152602001600182016040518060600160405290816000820160009054906101000a900460ff1660ff1660ff1681526020016000820160019054906101000a900460ff1660ff1660ff1681526020016000820160029054906101000a900460ff1660ff1660ff168152505081526020016002820154815250509050919050565b610a716112c5565b60006040518060600160405290816000820160009054906101000a900460ff1660ff1660ff1681526020016000820160019054906101000a900460ff1660ff1660ff1681526020016000820160029054906101000a900460ff1660ff1660ff1681525050905090565b610aea610ae561109d565b61104f565b610b3257610af661109d565b6040517fa6b39856000000000000000000000000000000000000000000000000000000008152600401610b29919061175c565b60405180910390fd5b6706f05b59d3b20000341015610b7f57346040517fa518cf3c000000000000000000000000000000000000000000000000000000008152600401610b769190611835565b60405180910390fd5b600060016000610b8d61109d565b73ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000209050610c3b81600101826000016040518060600160405290816000820160009054906101000a900460ff1660ff1660ff1681526020016000820160019054906101000a900460ff1660ff1660ff1681526020016000820160029054906101000a900460ff1660ff1660ff16815250506110cb565b610c4361109d565b73ffffffffffffffffffffffffffffffffffffffff167f7bccfc393968f47d8bcc63bcdc6ae127442c4ebef9a39d4c96b7707510850a5682600101604051610c8b91906117d6565b60405180910390a250565b67016345785d8a000081565b610cb2610cad61109d565b61104f565b610cfa57610cbe61109d565b6040517fa6b39856000000000000000000000000000000000000000000000000000000008152600401610cf1919061175c565b60405180910390fd5b6000811415610d35576040517f899598f100000000000000000000000000000000000000000000000000000000815260040160405180910390fd5b8060016000610d4261109d565b73ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060020181905550610d8b61109d565b73ffffffffffffffffffffffffffffffffffffffff167f9dad8a821e2f8f51fbfcd99e32dd5b871076d7517ce5c1c01fe7f36bad08d0d082604051610dd09190611835565b60405180910390a250565b610deb610de661109d565b61104f565b15610e3457610df861109d565b6040517f66ea9f2e000000000000000000000000000000000000000000000000000000008152600401610e2b919061175c565b60405180910390fd5b67016345785d8a0000341015610e8157346040517fa518cf3c000000000000000000000000000000000000000000000000000000008152600401610e789190611835565b60405180910390fd5b6000610e8b6111bc565b9050604051806060016040528082815260200182815260200167016345785d8a000081525060016000610ebc61109d565b73ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060008201518160000160008201518160000160006101000a81548160ff021916908360ff16021790555060208201518160000160016101000a81548160ff021916908360ff16021790555060408201518160000160026101000a81548160ff021916908360ff160217905550505060208201518160010160008201518160000160006101000a81548160ff021916908360ff16021790555060208201518160000160016101000a81548160ff021916908360ff16021790555060408201518160000160026101000a81548160ff021916908360ff160217905550505060408201518160020155905050610fe761109d565b73ffffffffffffffffffffffffffffffffffffffff167ff93af79224d37bfb0f4182ee1dc777563270ec6a208db996b70a5533df0b408b8260405161102c91906117bb565b60405180910390a250565b6706f05b59d3b2000081565b67016345785d8a000081565b600080600160008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060020154119050919050565b600033905090565b60008160ff168360ff1611156110bf5781830390506110c5565b82820390505b92915050565b6002816000015160ff168360000160009054906101000a900460ff1660ff166110f49190611897565b6110fe91906118cf565b8260000160006101000a81548160ff021916908360ff1602179055506002816020015160ff168360000160019054906101000a900460ff1660ff166111439190611897565b61114d91906118cf565b8260000160016101000a81548160ff021916908360ff1602179055506002816040015160ff168360000160029054906101000a900460ff1660ff166111929190611897565b61119c91906118cf565b8260000160026101000a81548160ff021916908360ff1602179055505050565b6111c46112c5565b60006111ce61109d565b6001436111db919061196d565b40426040516020016111ef9392919061170a565b6040516020818303038152906040528051906020012060001c90506000604051806060016040528061123261ffff62ff0000861661122d9190611900565b611277565b60ff16815260200161125360ff61ff00861661124e9190611900565b611277565b60ff16815260200161126760ff8516611277565b60ff168152509050809250505090565b6000607f8260ff16111561128e5760ff9050611293565b600090505b919050565b60405180606001604052806112ab6112c5565b81526020016112b86112c5565b8152602001600081525090565b6040518060600160405280600060ff168152602001600060ff168152602001600060ff1681525090565b6000813590506112fe81611ba7565b92915050565b60006060828403121561131657600080fd5b81905092915050565b60006060828403121561133157600080fd5b61133b6060611850565b9050600061134b84828501611394565b600083015250602061135f84828501611394565b602083015250604061137384828501611394565b60408301525092915050565b60008135905061138e81611bbe565b92915050565b6000813590506113a381611bd5565b92915050565b6000602082840312156113bb57600080fd5b60006113c9848285016112ef565b91505092915050565b600080608083850312156113e557600080fd5b60006113f3858286016112ef565b925050602061140485828601611304565b9150509250929050565b60006060828403121561142057600080fd5b600061142e8482850161131f565b91505092915050565b60006020828403121561144957600080fd5b60006114578482850161137f565b91505092915050565b60006020828403121561147257600080fd5b600061148084828501611394565b91505092915050565b611492816119ae565b82525050565b6114a96114a4826119ae565b611a9a565b82525050565b6114b8816119c0565b82525050565b6114cf6114ca826119cc565b611aac565b82525050565b60006114e2600083611875565b91506114ed82611ba4565b600082019050919050565b606082016115096000830183611880565b61151660008501826116fb565b506115246020830183611880565b61153160208501826116fb565b5061153f6040830183611880565b61154c60408501826116fb565b50505050565b60608201600082015161156860008501826116fb565b50602082015161157b60208501826116fb565b50604082015161158e60408501826116fb565b50505050565b6060820160008201516115aa60008501826116fb565b5060208201516115bd60208501826116fb565b5060408201516115d060408501826116fb565b50505050565b6060820160008083015490506115eb81611a1b565b6115f860008601826116fb565b5061160281611a35565b61160f60208601826116fb565b5061161981611a4f565b61162660408601826116fb565b5050505050565b60608201600080830154905061164281611a1b565b61164f60008601826116fb565b5061165981611a35565b61166660208601826116fb565b5061167081611a4f565b61167d60408601826116fb565b5050505050565b60e08201600082015161169a6000850182611552565b5060208201516116ad6060850182611552565b5060408201516116c060c08501826116c6565b50505050565b6116cf81611a04565b82525050565b6116de81611a04565b82525050565b6116f56116f082611a04565b611ac8565b82525050565b61170481611a0e565b82525050565b60006117168286611498565b60148201915061172682856114be565b60208201915061173682846116e4565b602082019150819050949350505050565b6000611752826114d5565b9150819050919050565b60006020820190506117716000830184611489565b92915050565b600060208201905061178c60008301846114af565b92915050565b600060c0820190506117a760008301856114f8565b6117b46060830184611594565b9392505050565b60006060820190506117d06000830184611594565b92915050565b60006060820190506117eb600083018461162d565b92915050565b600060c08201905061180660008301856115d6565b61181360608301846114f8565b9392505050565b600060e08201905061182f6000830184611684565b92915050565b600060208201905061184a60008301846116d5565b92915050565b600061185a61186b565b90506118668282611a69565b919050565b6000604051905090565b600081905092915050565b600061188f6020840184611394565b905092915050565b60006118a2826119d6565b91506118ad836119d6565b92508261ffff038211156118c4576118c3611ad2565b5b828201905092915050565b60006118da826119d6565b91506118e5836119d6565b9250826118f5576118f4611b01565b5b828204905092915050565b600061190b82611a04565b915061191683611a04565b92508261192657611925611b01565b5b828204905092915050565b600061193c826119d6565b9150611947836119d6565b92508161ffff048311821515161561196257611961611ad2565b5b828202905092915050565b600061197882611a04565b915061198383611a04565b92508282101561199657611995611ad2565b5b828203905092915050565b600060ff82169050919050565b60006119b9826119e4565b9050919050565b60008115159050919050565b6000819050919050565b600061ffff82169050919050565b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b6000819050919050565b600060ff82169050919050565b6000611a2e611a2983611b7d565b6119a1565b9050919050565b6000611a48611a4383611b97565b6119a1565b9050919050565b6000611a62611a5d83611b8a565b6119a1565b9050919050565b611a7282611b5f565b810181811067ffffffffffffffff82111715611a9157611a90611b30565b5b80604052505050565b6000611aa582611ab6565b9050919050565b6000819050919050565b6000611ac182611b70565b9050919050565b6000819050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601260045260246000fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052604160045260246000fd5b6000601f19601f8301169050919050565b60008160601b9050919050565b60008160001c9050919050565b60008160101c9050919050565b60008160081c9050919050565b50565b611bb0816119ae565b8114611bbb57600080fd5b50565b611bc781611a04565b8114611bd257600080fd5b50565b611bde81611a0e565b8114611be957600080fd5b5056fea2646970667358221220c7f86b05bfc4c22ca83cc7103b9b986a4511cf3b72fbbd1814cdea752e0b3f9b64736f6c63430008040033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 55,
+        "contract": "contracts/RainbowToken.sol:RainbowToken",
+        "label": "_targetColor",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_struct(Color)34_storage"
+      },
+      {
+        "astId": 60,
+        "contract": "contracts/RainbowToken.sol:RainbowToken",
+        "label": "_players",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_mapping(t_address,t_struct(Player)43_storage)"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_mapping(t_address,t_struct(Player)43_storage)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => struct RainbowToken.Player)",
+        "numberOfBytes": "32",
+        "value": "t_struct(Player)43_storage"
+      },
+      "t_struct(Color)34_storage": {
+        "encoding": "inplace",
+        "label": "struct RainbowToken.Color",
+        "members": [
+          {
+            "astId": 29,
+            "contract": "contracts/RainbowToken.sol:RainbowToken",
+            "label": "r",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8"
+          },
+          {
+            "astId": 31,
+            "contract": "contracts/RainbowToken.sol:RainbowToken",
+            "label": "g",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_uint8"
+          },
+          {
+            "astId": 33,
+            "contract": "contracts/RainbowToken.sol:RainbowToken",
+            "label": "b",
+            "offset": 2,
+            "slot": "0",
+            "type": "t_uint8"
+          }
+        ],
+        "numberOfBytes": "32"
+      },
+      "t_struct(Player)43_storage": {
+        "encoding": "inplace",
+        "label": "struct RainbowToken.Player",
+        "members": [
+          {
+            "astId": 37,
+            "contract": "contracts/RainbowToken.sol:RainbowToken",
+            "label": "originalColor",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_struct(Color)34_storage"
+          },
+          {
+            "astId": 40,
+            "contract": "contracts/RainbowToken.sol:RainbowToken",
+            "label": "color",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_struct(Color)34_storage"
+          },
+          {
+            "astId": 42,
+            "contract": "contracts/RainbowToken.sol:RainbowToken",
+            "label": "blendingPrice",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_uint256"
+          }
+        ],
+        "numberOfBytes": "96"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      },
+      "t_uint8": {
+        "encoding": "inplace",
+        "label": "uint8",
+        "numberOfBytes": "1"
+      }
+    }
+  }
+}

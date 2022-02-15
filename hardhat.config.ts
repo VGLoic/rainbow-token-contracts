@@ -26,6 +26,15 @@ const config: HardhatUserConfig = {
         count: 1
       }
     },
+    hardhat: {
+      chainId: 31337,
+      accounts: {
+        mnemonic: process.env.LOCALHOST_MNEMONIC || "",
+        path: "m/44'/60'/0'/0",
+        initialIndex: 0,
+        count: 20
+      }
+    },
   },
   namedAccounts: {
     deployer: 0

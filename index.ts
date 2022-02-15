@@ -1,11 +1,12 @@
 // Rainbow Token
 import rainbowTokenGoerliDeployment from "./deployments/goerli/RainbowToken.json";
+import rainbowTokenLocalhostDeployment from "./deployments/localhost/RainbowToken.json";
 
 export * from "./typechain";
 
 enum Network {
     goerli = 5,
-    local = 31337
+    localhost = 31337
 }
 type ContractAddresses = { [K in number]?: string }
 
@@ -25,6 +26,7 @@ function getNetworkAddressFactory(contractAddresses: ContractAddresses): ((netwo
 
 const rainbowTokenAddresses = {
     [Network.goerli]: rainbowTokenGoerliDeployment.address,
+    [Network.localhost]: rainbowTokenLocalhostDeployment.address
 };
 
 const rainbowToken = {

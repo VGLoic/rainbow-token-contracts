@@ -6,7 +6,6 @@
   "files": [
     "lib",
     "contracts",
-    "deploy",
     "artifacts"
   ],
   "main": "lib/index.js",
@@ -26,7 +25,9 @@
     "typechain": "hardhat typechain",
     "test": "hardhat test",
     "test:cover": "hardhat coverage",
-    "void:deploy": "hardhat deploy --report-gas",    
+    "local:node": "hardhat node",
+    "void:deploy": "hardhat deploy --report-gas",  
+    "local:deploy": "hardhat --network local deploy",
     "goerli:deploy": "hardhat --network goerli deploy",
     "solhint": "solhint 'contracts/**/*.sol'",
     "format": "prettier --write --ignore-unknown test contracts",
