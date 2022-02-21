@@ -21,10 +21,10 @@ jobs:
       - run: npm run compile
       - run: npm test
       - run: npm run build
-  deploy:
+  release:
     needs: test
     runs-on: ubuntu-latest
-    name: Deploy on Goerli
+    name: Release
     steps:
       - uses: actions/checkout@v2
       - name: Setup node
@@ -34,10 +34,10 @@ jobs:
           cache: npm
       - run: npm install
       - run: npm run compile
-      - run: npm run goerli:deploy
-        env:
-          INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-          GOERLI_MNEMONIC: ${{ secrets.GOERLI_MNEMONIC }}
+      # - run: npm run goerli:deploy
+      #   env:
+      #     INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      #     GOERLI_MNEMONIC: ${{ secrets.GOERLI_MNEMONIC }}
       - run: npm run build
       - name: Semantic release
         env:
