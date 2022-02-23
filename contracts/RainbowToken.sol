@@ -135,6 +135,18 @@ contract RainbowToken is Context {
         return _players[account];
     }
 
+    function getPlayers(address[] calldata accounts)
+        public
+        view
+        returns (Player[] memory)
+    {
+        Player[] memory players = new Player[](accounts.length);
+        for (uint256 index = 0; index < accounts.length; index++) {
+            players[index] = _players[accounts[index]];
+        }
+        return players;
+    }
+
     function getTargetColor() public view returns (Color memory) {
         return _targetColor;
     }
