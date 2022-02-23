@@ -43,8 +43,8 @@ export async function testSetup({
       )
     );
     const receipts = await Promise.all(txs.map((tx) => tx.wait()));
-    const players = await Promise.all(
-      signers.map((signer) => rainbowToken.getPlayer(signer.address))
+    const players = await rainbowToken.getPlayers(
+      signers.map((s) => s.address)
     );
 
     try {
