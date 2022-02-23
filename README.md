@@ -1,5 +1,7 @@
 # Rainbow Token Contracts
 
+[![Coverage Status](https://coveralls.io/repos/github/VGLoic/rainbow-token-contracts/badge.svg?branch=main)](https://coveralls.io/github/VGLoic/rainbow-token-contracts?branch=main)
+
 ## Local Development
 
 This repository is developped using [hardhat](https://hardhat.org/). One is free to directly use the available scripts from hardhat using `npx`, otherwise, a set of local script have been made in order to allow safe local development.
