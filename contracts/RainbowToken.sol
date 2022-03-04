@@ -3,6 +3,25 @@ pragma solidity ^0.8.0;
 
 import {Context} from "@openzeppelin/contracts/utils/Context.sol";
 
+/**
+ * @title RainbowToken
+ * The contract implements the rainbow token game.
+ * ## Join game
+ * Any address can join the game by paying a fixed fee which goes to the contract.
+ * By joining the game, a "random" color is associated to the player.
+ * ## Blend
+ * A player, the blender, may blend its color with the one of another player, the blending player, as a consequence the blender color changes.
+ * In order to blend, the blender must pay a fee which is the blending price of the blending player. Half of the fee goes to the contract, the other half to the blending player.
+ * ## Self blend
+ * A player, the blender, may blend with its own original/starting color by paying a fixed fee which goes to the contract.
+ * ## Update blending price
+ * A player may update its blending price.
+ * ## Claim victory
+ * Once the color of a player is close enough to the target color, decided at constructor, the player may claim the victory and obtain the balance of the contract, the game is over.
+ *
+ * ## WARNING ##
+ * This contract is made for educational purpose. Multiple "strategic" attacks are possible in order to programatically win the game.
+ */
 contract RainbowToken is Context {
     struct Color {
         uint8 r;
@@ -45,6 +64,12 @@ contract RainbowToken is Context {
     );
     event GameOver(address indexed winner, uint256 amount);
 
+    /**
+     * @dev Constructor
+     * @param r R component of the target color, must be between 6 and 249
+     * @param g G component of the target color, must be between 6 and 249
+     * @param b B component of the target color, must be between 6 and 249
+     */
     constructor(
         uint8 r,
         uint8 g,
@@ -60,6 +85,11 @@ contract RainbowToken is Context {
         _;
     }
 
+    /**
+     * @notice Join the game by paying an entry fee
+     * @dev Can only be called by a non player
+     * Emits a {PlayerJoined} event
+     */
     function joinGame() public payable {
         if (_isPlayer(_msgSender())) revert SenderAlreadyPlayer(_msgSender());
         if (msg.value < ENTRY_FEE) revert InsufficientValue(msg.value);
@@ -75,12 +105,23 @@ contract RainbowToken is Context {
         emit PlayerJoined(_msgSender(), originalColor);
     }
 
+    /**
+     * @notice Update the player blending price
+     * @dev Can only be called by a player
+     * @param blendingPrice The new blending price of the player
+     * Emits a {BlendingPriceUpdated} event
+     */
     function updateBlendingPrice(uint256 blendingPrice) public onlyPlayer {
         if (blendingPrice == 0) revert InvalidZeroBlendingPrice();
         _players[_msgSender()].blendingPrice = blendingPrice;
         emit BlendingPriceUpdated(_msgSender(), blendingPrice);
     }
 
+    /**
+     * @notice Self blend with player original color
+     * @dev Can only be called by a player
+     * Emits a {SelfBlended} event
+     */
     function selfBlend() public payable onlyPlayer {
         if (msg.value < SELF_BLEND_PRICE) revert InsufficientValue(msg.value);
         Player storage _player = _players[_msgSender()];
@@ -88,6 +129,12 @@ contract RainbowToken is Context {
         emit SelfBlended(_msgSender(), _player.color);
     }
 
+    /**
+     * @notice Blend with another player color
+     * @dev Can only be called by a player and with a player as blending account
+     * @param blendingAccount The address of the player with who the sender is blending
+     * @param blendingColor The color of the player with who the sender is blending
+     */
     function blend(address blendingAccount, Color calldata blendingColor)
         public
         payable
@@ -113,6 +160,10 @@ contract RainbowToken is Context {
         emit Blended(_msgSender(), blendingAccount, _color, blendingColor);
     }
 
+    /**
+     * @notice Claim victory and retrieve contract balance by self destructing contract
+     * @dev Can only be called by player with a color close enough to target color
+     */
     function claimVictory() public onlyPlayer {
         Color memory playerColor = _players[_msgSender()].color;
 
@@ -127,14 +178,29 @@ contract RainbowToken is Context {
         selfdestruct(payable(_msgSender()));
     }
 
+    /**
+     * @notice Check if an address is a player
+     * @param account Address to check
+     * @return isPlayer True if the address is a player, false otherwise
+     */
     function isPlayer(address account) public view returns (bool) {
         return _isPlayer(account);
     }
 
+    /**
+     * @notice Get the player associated to an address
+     * @param account Address of the player
+     * @return Player The player associated to the address
+     */
     function getPlayer(address account) public view returns (Player memory) {
         return _players[account];
     }
 
+    /**
+     * @notice Get the players associated to an array of addresses
+     * @param accounts Array of addresses of the players
+     * @return Players The players associated to the addresses
+     */
     function getPlayers(address[] calldata accounts)
         public
         view
@@ -147,6 +213,10 @@ contract RainbowToken is Context {
         return players;
     }
 
+    /**
+     * @notice Get the target color
+     * @return TargetColor The contract target color
+     */
     function getTargetColor() public view returns (Color memory) {
         return _targetColor;
     }
