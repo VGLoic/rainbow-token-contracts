@@ -1,6 +1,9 @@
+
 # Rainbow Token Contracts
 
 [![Coverage Status](https://coveralls.io/repos/github/VGLoic/rainbow-token-contracts/badge.svg?branch=main)](https://coveralls.io/github/VGLoic/rainbow-token-contracts?branch=main)
+
+:warning: This application has been developed for educational purposes and should not be considered as a serious product in its current state :warning:
 
 ## Local Development
 
